@@ -1,10 +1,9 @@
-import mysql from "mysql";
-import { config } from "../constant/db-config";
+import mysql from "mysql2/promise";
+import { config } from "../helper/db-config";
 
-export const connection = mysql.createPool({
+export const connection: mysql.Pool = mysql.createPool({
   host: config.HOST,
   user: config.USER,
   password: config.PASSWORD,
   database: config.DB
 });
-
