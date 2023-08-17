@@ -1,7 +1,5 @@
 import { identifyContact } from './identify-service';
-import { convertContactToResponse } from '../helper/utils';
-import { APIRequest, ContactType } from '../interface/common';
-import { Contact } from '../repository/contact';
+import { APIRequest } from '../interface/common';
 
 const mockGetAllByEmailOrPhoneNumber = jest.fn()
 const mockCreate = jest.fn()
@@ -82,8 +80,8 @@ describe('identifyContact', () => {
 
   test('case 3: 1 secondary id existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
-      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
-      { id: 2, linkPrecedence: 'secondary', email: 'existing2@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 2, linkPrecedence: 'secondary', email: 'existing2@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
     ]);
     mockCreate.mockResolvedValueOnce({
       id: 3,
@@ -104,14 +102,36 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["existing@email.com", "existing2@email.com", "new@email.com"],
-        phoneNumbers: ["1234567890", "0987654321"],
+        phoneNumbers: ["0987654321", "1234567890"],
         "primaryContactId": 1,
         "secondaryContactIds": [2, 3]
       }
     });
   });
 
-  test('case 4: 2 primary ids existing', async () => {
+  test('case 4: 1 secondary and primary id existing', async () => {
+    mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
+      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 2, linkPrecedence: 'secondary', email: 'existing2@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+    ]);
+    const req: APIRequest = {
+      email: 'existing2@email.com',
+      phoneNumber: '1234567890',
+    };
+
+    const result = await identifyContact(req);
+
+    expect(result).toEqual({
+      contact: {
+        emails: ["existing@email.com", "existing2@email.com"],
+        phoneNumbers: ["1234567890", "0987654321"],
+        "primaryContactId": 1,
+        "secondaryContactIds": [2]
+      }
+    });
+  });
+
+  test('case 5: 2 primary ids existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
       { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
       { id: 2, linkPrecedence: 'primary', email: 'existing2@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },

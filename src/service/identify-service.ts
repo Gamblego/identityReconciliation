@@ -9,7 +9,7 @@ export const identifyContact = async (req: APIRequest) => {
            1. no contacts present - new primary entry
            2. 1 primary id present - new secondary entry
            3. 2 primary ids present - check basis createdAt and 
-           convert one of the primary contacts to secondary
+           convert one of the primary with newest contacts to secondary
 
        more than 2 primary ids not possible
    */
@@ -25,7 +25,7 @@ export const identifyContact = async (req: APIRequest) => {
 
       if (phoneNumber && !validatePhoneNumber(phoneNumber)) throw new Error('Invalid Phone Number')
 
-      console.log("incoming request: ", JSON.stringify(req));
+      console.log("Incoming request: ", JSON.stringify(req));
       const contactRepository = new Contact()
 
       // contains all contacts whose data match and their primary contacts
@@ -49,17 +49,20 @@ export const identifyContact = async (req: APIRequest) => {
       } else {
          // set of primary contacts                    
          let primaryContacts: ContactType[] =
-            existingContacts.filter((contact: any) => contact.linkPrecedence == "primary");
+            existingContacts.filter((contact: any) => contact.linkPrecedence === "primary");
          primaryId = primaryContacts[0].id!;
 
          if (primaryContacts.length === 1) {
-            let sameContactExists: boolean = existingContacts.filter((contact: any) => {
-               return contact.phoneNumber == req.phoneNumber &&
-                  contact.email == req.email;
+            let phoneNumberExists: boolean = existingContacts.filter((contact: ContactType) => {
+               return contact.phoneNumber === req.phoneNumber
             }).length > 0;
 
-            // case 2: new secondary contact    
-            if (!sameContactExists) {
+            let emailExists: boolean = existingContacts.filter((contact: ContactType) => {
+               return contact.email === req.email
+            }).length > 0;
+
+            // case 2: new secondary contact
+            if (!phoneNumberExists || !emailExists) {
                let newContact: ContactType = {
                   linkPrecedence: "secondary",
                   email: req.email || null,
