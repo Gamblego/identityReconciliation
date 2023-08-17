@@ -7,7 +7,7 @@ export class Contact {
 
   async create(contact: ContactType) {
     console.log("create contact request: ", JSON.stringify(contact));
-    let [newContact, fields]: any[] =
+    let [newContact]: any[] =
       await connection.execute("INSERT INTO contact " +
         "(linkPrecedence, createdAt, updatedAt, email, phoneNumber, linkedId) VALUES (?,?,?,?,?,?)",
         [contact.linkPrecedence!, contact.createdAt!, contact.updatedAt!, contact.email!, contact.phoneNumber!, contact.linkedId]);

@@ -26,14 +26,15 @@ export const identifyContact = async (req: APIRequest) => {
       if (phoneNumber && !validatePhoneNumber(phoneNumber)) throw new Error('Invalid Phone Number')
 
       console.log("incoming request: ", JSON.stringify(req));
+      const contactRepository = new Contact()
 
       // contains all contacts whose data match and their primary contacts
       let existingContacts: any =
-         await Contact.prototype.getAllByEmailOrPhoneNumber(req.email, req.phoneNumber);
-      let primaryId = undefined;
+         await contactRepository.getAllByEmailOrPhoneNumber(req.email, req.phoneNumber);
+      let primaryId: number;
 
       // case 1: no contact at all
-      if (!existingContacts || existingContacts.length == 0) {
+      if (!existingContacts || existingContacts.length === 0) {
          let newContact: ContactType = {
             linkPrecedence: "primary",
             email: req.email || null,
@@ -43,15 +44,15 @@ export const identifyContact = async (req: APIRequest) => {
             linkedId: null
          };
 
-         existingContacts = [await Contact.prototype.create(newContact)];
-         primaryId = existingContacts[0].id!;
+         existingContacts = [await contactRepository.create(newContact)];
+         primaryId = existingContacts[0].id;
       } else {
          // set of primary contacts                    
          let primaryContacts: ContactType[] =
             existingContacts.filter((contact: any) => contact.linkPrecedence == "primary");
          primaryId = primaryContacts[0].id!;
 
-         if (primaryContacts.length == 1) {
+         if (primaryContacts.length === 1) {
             let sameContactExists: boolean = existingContacts.filter((contact: any) => {
                return contact.phoneNumber == req.phoneNumber &&
                   contact.email == req.email;
@@ -68,7 +69,7 @@ export const identifyContact = async (req: APIRequest) => {
                   linkedId: primaryId
                };
 
-               existingContacts.push(await Contact.prototype.create(newContact));
+               existingContacts.push(await contactRepository.create(newContact));
             }
          } else {
             // case 3: multiple primary contacts
@@ -78,7 +79,7 @@ export const identifyContact = async (req: APIRequest) => {
                secondaryId = primaryContacts[0].id!;
             }
 
-            Contact.prototype.updateAllByLinkedId(primaryId, secondaryId);
+            contactRepository.updateAllByLinkedId(primaryId, secondaryId);
 
          }
       }

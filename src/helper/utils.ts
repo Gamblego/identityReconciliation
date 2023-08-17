@@ -1,5 +1,4 @@
 import { APIResponse, ContactType } from "../interface/common";
-import { Constants } from "./used-constants";
 
 export const convertContactToResponse = (contacts: ContactType[], primaryId: Number) => {
     let primaryContact = contacts.find(contact => contact.id! == primaryId);
@@ -14,7 +13,7 @@ export const convertContactToResponse = (contacts: ContactType[], primaryId: Num
     };
 
     contacts.forEach(contact => {
-        if (contact.id! != primaryId) {
+        if (contact.id! !== primaryId) {
             result.contact.secondaryContactIds.push(contact.id!);
             if (contact.email && result.contact.emails.indexOf(contact.email) == -1) {
                 result.contact.emails.push(contact.email!);
