@@ -19,7 +19,7 @@ export const convertContactToResponse = (contacts: ContactType[], primaryId: Num
             if (contact.email && result.contact.emails.indexOf(contact.email) == -1) {
                 result.contact.emails.push(contact.email!);
             }
-    
+
             if (contact.phoneNumber && result.contact.phoneNumbers.indexOf(contact.phoneNumber) == -1) {
                 result.contact.phoneNumbers.push(contact.phoneNumber!);
             }
@@ -32,24 +32,23 @@ export const convertContactToResponse = (contacts: ContactType[], primaryId: Num
 export function validatePhoneNumber(phoneNumber: string): boolean {
     // Remove all non-digit characters from the phone number
     const cleanedNumber = phoneNumber.replace(/[^\d]/g, '');
-  
+
     // Check if the cleaned number consists only of digits
     if (!/^\d+$/.test(cleanedNumber)) {
-      return false;
+        return false;
     }
 
     // Check if the cleaned number is of a valid length
     if (cleanedNumber.length < 10 || cleanedNumber.length > 11) {
-      return false;
+        return false;
     }
     return true;
-  }
+}
 
-  export function validateEmail(email: string): boolean {
+export function validateEmail(email: string): boolean {
     // Regular expression pattern for basic email validation
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  
+
     // Test the email against the pattern
     return emailPattern.test(email);
-  }
-  
+}
