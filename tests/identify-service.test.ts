@@ -1,10 +1,10 @@
-import { identifyContact } from './identify-service';
-import { APIRequest } from '../interface/common';
+import { identifyContact } from '../src/service/identify-service';
+import { APIRequest } from '../src/interface/common';
 
 const mockGetAllByEmailOrPhoneNumber = jest.fn()
 const mockCreate = jest.fn()
 
-jest.mock('../repository/contact', () => {
+jest.mock('../src/repository/contact', () => {
   return {
     Contact: jest.fn().mockImplementation(() => {
       return {

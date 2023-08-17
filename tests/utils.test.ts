@@ -1,5 +1,5 @@
-import { convertContactToResponse, validatePhoneNumber, validateEmail } from "./utils";
-import { APIResponse, ContactType } from "../interface/common";
+import { convertContactToResponse, validatePhoneNumber, validateEmail } from "../src/helper/utils";
+import { APIResponse, ContactType } from "../src/interface/common";
 
 // Unit test for convertContactToResponse function
 describe("convertContactToResponse", () => {
