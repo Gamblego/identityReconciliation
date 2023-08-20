@@ -13,11 +13,9 @@ export const identifyContact = async (req: APIRequest) => {
 
        more than 2 primary ids not possible
    */
-
-   // validations: email and phone number and atleast 1 should be present
    try {
-      const email = req.email
-      const phoneNumber = req.phoneNumber
+      const { email, phoneNumber } = req;
+
 
       if (!email && !phoneNumber) throw new Error('Email and phone number cannot be undefined')
 
@@ -29,16 +27,15 @@ export const identifyContact = async (req: APIRequest) => {
       const contactRepository = new Contact()
 
       // contains all contacts whose data match and their primary contacts
-      let existingContacts: any =
-         await contactRepository.getAllByEmailOrPhoneNumber(req.email, req.phoneNumber);
+      let existingContacts: any = await contactRepository.getAllByEmailOrPhoneNumber(email, phoneNumber);
       let primaryId: number;
 
       // case 1: no contact at all
       if (!existingContacts || existingContacts.length === 0) {
          let newContact: ContactType = {
             linkPrecedence: "primary",
-            email: req.email || null,
-            phoneNumber: req.phoneNumber || null,
+            email: email || null,
+            phoneNumber: phoneNumber || null,
             createdAt: new Date(),
             updatedAt: new Date(),
             linkedId: null
@@ -48,25 +45,24 @@ export const identifyContact = async (req: APIRequest) => {
          primaryId = existingContacts[0].id;
       } else {
          // set of primary contacts                    
-         let primaryContacts: ContactType[] =
-            existingContacts.filter((contact: any) => contact.linkPrecedence === "primary");
+         let primaryContacts: ContactType[] = existingContacts.filter((contact: any) => contact.linkPrecedence === "primary");
          primaryId = primaryContacts[0].id!;
 
          if (primaryContacts.length === 1) {
-            let phoneNumberExists: boolean = existingContacts.filter((contact: ContactType) => {
-               return contact.phoneNumber === req.phoneNumber
-            }).length > 0;
+            let phoneNumberExists: boolean = existingContacts.some((contact: ContactType) => {
+               return contact.phoneNumber === phoneNumber
+            });
 
-            let emailExists: boolean = existingContacts.filter((contact: ContactType) => {
-               return contact.email === req.email
-            }).length > 0;
+            let emailExists: boolean = existingContacts.some((contact: ContactType) => {
+               return contact.email === email
+            });
 
             // case 2: new secondary contact
             if (!phoneNumberExists || !emailExists) {
                let newContact: ContactType = {
                   linkPrecedence: "secondary",
-                  email: req.email || null,
-                  phoneNumber: req.phoneNumber || null,
+                  email: email || null,
+                  phoneNumber: phoneNumber || null,
                   createdAt: new Date(),
                   updatedAt: new Date(),
                   linkedId: primaryId
@@ -82,13 +78,22 @@ export const identifyContact = async (req: APIRequest) => {
                secondaryId = primaryContacts[0].id!;
             }
 
-            contactRepository.updateAllByLinkedId(primaryId, secondaryId);
+            await contactRepository.updateAllByLinkedId(primaryId, secondaryId);
 
          }
       }
 
       return convertContactToResponse(existingContacts, primaryId);
-   } catch(err){
+   } catch (err) {
       throw new Error(`[identifyContact] ${JSON.stringify(err)}`)
+   }
+}
+
+export const getTable = async () => {
+   try {
+      const contactRepository = new Contact()
+      return await contactRepository.getAll()
+   } catch(err) {
+      throw new Error(`[getTable] ${JSON.stringify(err)}`)
    }
 }
