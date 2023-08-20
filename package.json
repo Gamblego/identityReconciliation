@@ -19,8 +19,7 @@
     "morgan": "~1.9.1",
     "mysql2": "^3.6.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0",
-    "yarn": "^1.22.19"
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",
