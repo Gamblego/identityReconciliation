@@ -7,7 +7,7 @@ export const convertContactToResponse = (contacts: ContactType[], primaryId: Num
         contact: {
             primaryContactId: primaryContact?.id!,
             emails: [primaryContact?.email!],
-            phoneNumbers: [primaryContact?.phoneNumber!],
+            phoneNumbers: [primaryContact?.phone_number!],
             secondaryContactIds: []
         }
     };
@@ -19,8 +19,8 @@ export const convertContactToResponse = (contacts: ContactType[], primaryId: Num
                 result.contact.emails.push(contact.email!);
             }
 
-            if (contact.phoneNumber && result.contact.phoneNumbers.indexOf(contact.phoneNumber) == -1) {
-                result.contact.phoneNumbers.push(contact.phoneNumber!);
+            if (contact.phone_number && result.contact.phoneNumbers.indexOf(contact.phone_number) == -1) {
+                result.contact.phoneNumbers.push(contact.phone_number!);
             }
         }
     });

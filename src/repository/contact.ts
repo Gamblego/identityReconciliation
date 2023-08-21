@@ -15,8 +15,8 @@ export class Contact {
   async create(contact: ContactType) {
     console.log("create contact request: ", JSON.stringify(contact));
     let newContact = await connection.query("INSERT INTO contacts " +
-        "(linkPrecedence, createdAt, updatedAt, email, phoneNumber, linkedId) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
-        [contact.linkPrecedence!, contact.createdAt!, contact.updatedAt!, contact.email!, contact.phoneNumber!, contact.linkedId]);
+        "(link_precedence, created_at, updated_at, email, phone_number, linked_id) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+        [contact.link_precedence!, contact.created_at!, contact.updated_at!, contact.email!, contact.phone_number!, contact.linked_id]);
     console.log("created contact: ", { ...contact, id: newContact.rows[0].id });
     return { ...contact, id: newContact.rows[0].id };
   };
@@ -31,14 +31,14 @@ export class Contact {
   };
 
   // get all primary and secondary contacts connected to the query
-  async getAllByEmailOrPhoneNumber(email?: String, phoneNumber?: String) {
+  async getAllByEmailOrPhoneNumber(email?: String, phone_number?: String) {
 
-    const whereClause = !email ? `c2.phoneNumber = '${phoneNumber}'` :
-      !phoneNumber ? `c2.email = '${email}'` :
-        `(c2.phoneNumber = '${phoneNumber}' OR c2.email = '${email}')`
+    const whereClause = !email ? `c2.phone_number = '${phone_number}'` :
+      !phone_number ? `c2.email = '${email}'` :
+        `(c2.phone_number = '${phone_number}' OR c2.email = '${email}')`
 
     let query = 'SELECT * FROM contacts c1 WHERE EXISTS (SELECT * FROM contacts c2 \
-      WHERE (c1.id = c2.id OR c1.id = c2.linkedId OR c1.linkedId = c2.linkedId OR c1.linkedId = c2.id) \
+      WHERE (c1.id = c2.id OR c1.id = c2.linked_id OR c1.linked_id = c2.linked_id OR c1.linked_id = c2.id) \
       AND ' + whereClause + ')';
 
     let result = await connection.query(query);
@@ -51,7 +51,7 @@ export class Contact {
     // we have to update all contacts of any contact, 
     // so the primary id and all secondary ids linked to it 
     let result = await connection.query(
-      "UPDATE contacts SET linkedId = $1, updatedAt = $2, linkPrecedence = $3 WHERE id = $4 OR linkedId = $5",
+      "UPDATE contacts SET linked_id = $1, updated_at = $2, link_precedence = $3 WHERE id = $4 OR linked_id = $5",
       [parentId, new Date(), Constants.SECONDARY, childId, childId]);
 
     if (result.rowCount == 0) {

@@ -7,34 +7,34 @@
 *       properties:
 *         email:
 *           type: string
-*         phoneNumber:
+*         phone_number:
 *           type: string
-*         linkedId:
+*         linked_id:
 *           type: integer
-*         linkedPrecedence:
+*         linked_precedence:
 *           type: string
 *           enum:
 *             - primary
 *             - secondary
-*         createdAt:
+*         created_at:
 *           type: string
 *           format: date-time
-*         updatedAt:
+*         update_at:
 *           type: string
 *           format: date-time
-*         deletedAt:
+*         deleted_at:
 *           type: string
 *           format: date-time
 */
 export type ContactType = {
     id?: number
-    phoneNumber?: string | null
+    phone_number?: string | null
     email?: string | null
-    linkedId?: number | null // the ID of another Contact linked to this one
-    linkPrecedence?: "secondary" | "primary" // "primary" if it's the first Contact in the link
-    createdAt?: Date
-    updatedAt?: Date
-    deletedAt?: Date
+    linked_id?: number | null // the ID of another Contact linked to this one
+    link_precedence?: "secondary" | "primary" // "primary" if it's the first Contact in the link
+    created_at?: Date
+    updated_at?: Date
+    deleted_at?: Date
 }
 
 /**
