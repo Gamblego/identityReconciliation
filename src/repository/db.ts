@@ -1,9 +1,21 @@
-import mysql from "mysql2/promise";
-import { config } from "../helper/db-config";
+import { Pool } from 'pg';
 
-export const connection: mysql.Pool = mysql.createPool({
-  host: config.HOST,
-  user: config.USER,
-  password: config.PASSWORD,
-  database: config.DB
+const pool = new Pool({
+  connectionString: process.env.CONNECTION_STRING
 });
+
+export const initiateConnection = () => {
+  pool.connect(async () => {
+    await pool.query("CREATE TABLE IF NOT EXISTS contacts (\
+    id INT PRIMARY KEY, \
+    phoneNumber VARCHAR(50), \
+    email VARCHAR(50), \
+    linkedId INT, \
+    linkPrecedence VARCHAR(50) NOT NULL, \
+    createdAt DATE NOT NULL, \
+    updatedAt DATE NOT NULL, \
+    deletedAt DATE)")
+  });
+}
+
+export const connection = pool;
