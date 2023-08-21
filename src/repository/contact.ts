@@ -14,11 +14,9 @@ export class Contact {
 
   async create(contact: ContactType) {
     console.log("create contact request: ", JSON.stringify(contact));
-    const query = {
-      text: "INSERT INTO contacts (linkPrecedence, createdAt, updatedAt, email, phoneNumber, linkedId) VALUES ($1,$2,$3,$4,$5,$6)",
-      values: [contact.linkPrecedence!, contact.createdAt!, contact.updatedAt!, contact.email!, contact.phoneNumber!, contact.linkedId]
-    }
-    let newContact = await connection.query(query);
+    let newContact = await connection.query("INSERT INTO contacts " +
+        "(linkPrecedence, createdAt, updatedAt, email, phoneNumber, linkedId) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+        [contact.linkPrecedence!, contact.createdAt!, contact.updatedAt!, contact.email!, contact.phoneNumber!, contact.linkedId]);
     console.log("created contact: ", { ...contact, id: newContact.rows[0].id });
     return { ...contact, id: newContact.rows[0].id };
   };
