@@ -5,7 +5,6 @@ import swaggerUI from "swagger-ui-express";
 import { Paths } from './src/helper/path';
 import bodyParser from 'body-parser';
 import { SwaggerSpecifications } from './swagger';
-import { initiateConnection } from './src/repository/db';
 
 dotenv.config();
 
@@ -32,4 +31,4 @@ app.listen(port, () => {
 
 process.on('warning', e => console.warn(e.stack));
 
-initiateConnection();
+// initiateConnection();
