@@ -6,8 +6,9 @@ const pool = new Pool({
 
 export const initiateConnection = () => {
   pool.connect(async () => {
+    await pool.query("DROP TABLE IF EXISTS contacts")
     await pool.query("CREATE TABLE IF NOT EXISTS contacts (\
-    id INT PRIMARY KEY, \
+    id SERIAL PRIMARY KEY, \
     phoneNumber VARCHAR(50), \
     email VARCHAR(50), \
     linkedId INT, \
