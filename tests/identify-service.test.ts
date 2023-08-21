@@ -25,12 +25,12 @@ describe('identifyContact', () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([]);
     mockCreate.mockResolvedValueOnce({
       id: 1,
-      linkPrecedence: "primary",
+      link_precedence: "primary",
       email:  'new@email.com',
-      phoneNumber: '9876543210',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      linkedId: null
+      phone_number: '9876543210',
+      created_at: new Date(),
+      updated_at: new Date(),
+      linked_id: null
     })
     const req: APIRequest = {
       email: 'new@email.com',
@@ -42,7 +42,7 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["new@email.com"],
-        phoneNumbers: ["9876543210"],
+        phone_numbers: ["9876543210"],
         "primaryContactId": 1,
         "secondaryContactIds": []
       }
@@ -50,16 +50,16 @@ describe('identifyContact', () => {
   })
   test('case 2: 1 primary id existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
-      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null }
+      { id: 1, link_precedence: 'primary', email: 'existing@email.com', phone_number: '1234567890', created_at: new Date(), updated_at: new Date(), linked_id: null }
     ]);
     mockCreate.mockResolvedValueOnce({
       id: 2,
-      linkPrecedence: "secondary",
+      link_precedence: "secondary",
       email:  'existing@email.com',
-      phoneNumber: '0987654321',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      linkedId: null
+      phone_number: '0987654321',
+      created_at: new Date(),
+      updated_at: new Date(),
+      linked_id: null
     })
     const req: APIRequest = {
       email: 'existing@email.com',
@@ -71,7 +71,7 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["existing@email.com"],
-        phoneNumbers: ["1234567890", "0987654321"],
+        phone_numbers: ["1234567890", "0987654321"],
         "primaryContactId": 1,
         "secondaryContactIds": [2]
       }
@@ -80,17 +80,17 @@ describe('identifyContact', () => {
 
   test('case 3: 1 secondary id existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
-      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
-      { id: 2, linkPrecedence: 'secondary', email: 'existing2@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 1, link_precedence: 'primary', email: 'existing@email.com', phone_number: '0987654321', created_at: new Date(), updated_at: new Date(), linked_id: null },
+      { id: 2, link_precedence: 'secondary', email: 'existing2@email.com', phone_number: '1234567890', created_at: new Date(), updated_at: new Date(), linked_id: null },
     ]);
     mockCreate.mockResolvedValueOnce({
       id: 3,
-      linkPrecedence: "secondary",
+      link_precedence: "secondary",
       email:  'new@email.com',
-      phoneNumber: '1234567890',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      linkedId: null
+      phone_number: '1234567890',
+      created_at: new Date(),
+      updated_at: new Date(),
+      linked_id: null
     })
     const req: APIRequest = {
       email: 'new@email.com',
@@ -102,7 +102,7 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["existing@email.com", "existing2@email.com", "new@email.com"],
-        phoneNumbers: ["0987654321", "1234567890"],
+        phone_numbers: ["0987654321", "1234567890"],
         "primaryContactId": 1,
         "secondaryContactIds": [2, 3]
       }
@@ -111,8 +111,8 @@ describe('identifyContact', () => {
 
   test('case 4: 1 secondary and primary id existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
-      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
-      { id: 2, linkPrecedence: 'secondary', email: 'existing2@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 1, link_precedence: 'primary', email: 'existing@email.com', phone_number: '1234567890', created_at: new Date(), updated_at: new Date(), linked_id: null },
+      { id: 2, link_precedence: 'secondary', email: 'existing2@email.com', phone_number: '0987654321', created_at: new Date(), updated_at: new Date(), linked_id: null },
     ]);
     const req: APIRequest = {
       email: 'existing2@email.com',
@@ -124,7 +124,7 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["existing@email.com", "existing2@email.com"],
-        phoneNumbers: ["1234567890", "0987654321"],
+        phone_numbers: ["1234567890", "0987654321"],
         "primaryContactId": 1,
         "secondaryContactIds": [2]
       }
@@ -133,8 +133,8 @@ describe('identifyContact', () => {
 
   test('case 5: 2 primary ids existing', async () => {
     mockGetAllByEmailOrPhoneNumber.mockResolvedValueOnce([
-      { id: 1, linkPrecedence: 'primary', email: 'existing@email.com', phoneNumber: '1234567890', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
-      { id: 2, linkPrecedence: 'primary', email: 'existing2@email.com', phoneNumber: '0987654321', createdAt: new Date(), updatedAt: new Date(), linkedId: null },
+      { id: 1, link_precedence: 'primary', email: 'existing@email.com', phone_number: '1234567890', created_at: new Date(), updated_at: new Date(), linked_id: null },
+      { id: 2, link_precedence: 'primary', email: 'existing2@email.com', phone_number: '0987654321', created_at: new Date(), updated_at: new Date(), linked_id: null },
     ]);
     const req: APIRequest = {
       email: 'new@email.com',
@@ -146,7 +146,7 @@ describe('identifyContact', () => {
     expect(result).toEqual({
       contact: {
         emails: ["existing@email.com", "existing2@email.com"],
-        phoneNumbers: ["1234567890", "0987654321"],
+        phone_numbers: ["1234567890", "0987654321"],
         "primaryContactId": 1,
         "secondaryContactIds": [2]
       }

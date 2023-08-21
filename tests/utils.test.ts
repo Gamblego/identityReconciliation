@@ -5,8 +5,8 @@ import { APIResponse, ContactType } from "../src/interface/common";
 describe("convertContactToResponse", () => {
   it("should return the correct API response", () => {
     const contacts: ContactType[] = [
-      { id: 1, email: "email1@example.com", phoneNumber: "1234567890" },
-      { id: 2, email: "email2@example.com", phoneNumber: "1234567890" },
+      { id: 1, email: "email1@example.com", phone_number: "1234567890" },
+      { id: 2, email: "email2@example.com", phone_number: "1234567890" },
     ];
     const primaryId = 1;
 

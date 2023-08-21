@@ -26,5 +26,9 @@ app.use(function (err: any, req: any, res: any, next: any) {
 });
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`⚡️[server]: Server is running on port ${port}`);
 });
+
+process.on('warning', e => console.warn(e.stack));
+
+// initiateConnection();
